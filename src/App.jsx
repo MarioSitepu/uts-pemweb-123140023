@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import './App.css';
 import SearchForm from './components/SearchForm';
-import { fetchCategories, fetchAreas } from './api/mealsAPI';
+import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe } from './api/mealsAPI';
+import DataTable from './components/DataTable';
 
 function App() {
   const [categories, setCategories] = useState([]);
   const [areas, setAreas] = useState([]);
+  const [meals, setMeals] = useState([]);
 
   useEffect(() => {
     const getInitialData = async () => {
@@ -18,17 +20,23 @@ function App() {
     getInitialData();
   }, []);
 
-  const handleSearch = (params) => {
-    console.log('Searching with:', params);
-    // Logika pencarian akan ditambahkan nanti
+  const handleSearch = async (params) => {
+    const result = await searchMeals(params);
+    setMeals(result || []);
   };
 
-  const handleFilterByArea = (area) => {
-    console.log('Filtering by area:', area);
+  const handleFilterByArea = async (area) => {
+    if (area) {
+      const result = await filterByArea(area);
+      setMeals(result || []);
+    } else {
+      setMeals([]);
+    }
   };
 
-  const handleRandomRecipe = () => {
-    console.log('Fetching random recipe...');
+  const handleRandomRecipe = async () => {
+    const result = await getRandomRecipe();
+    setMeals(result ? [result] : []);
   };
 
   return (
@@ -42,6 +50,7 @@ function App() {
           categories={categories}
           areas={areas}
         />
+        <DataTable meals={meals} />
       </main>
       {/* ... footer */}
     </div>

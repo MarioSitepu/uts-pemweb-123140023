@@ -20,3 +20,35 @@
 .search-form button:hover {
   background-color: #0056b3;
 }
+
+.data-table {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem;
+}
+.meal-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.meal-card:hover {
+    transform: translateY(-5px);
+}
+.meal-card img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+.meal-info {
+  padding: 1rem;
+}
+.meal-info h3 {
+  margin: 0 0 0.5rem 0;
+}
+.meal-info p {
+  margin: 0;
+  color: #666;
+}
