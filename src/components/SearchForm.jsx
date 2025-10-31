@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const SearchForm = ({ onSearch, onFilterByArea, onRandomRecipe }) => {
+const SearchForm = ({ onSearch, onFilterByArea, onRandomRecipe, categories, areas }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('');
   const [area, setArea] = useState('');
@@ -27,11 +27,15 @@ const SearchForm = ({ onSearch, onFilterByArea, onRandomRecipe }) => {
       />
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
         <option value="">All Categories</option>
-        {/* Opsi kategori akan diisi dari API nanti */}
+        {categories && categories.map(cat => (
+            <option key={cat.idCategory} value={cat.strCategory}>{cat.strCategory}</option>
+        ))}
       </select>
       <select value={area} onChange={handleAreaFilter}>
         <option value="">All Areas</option>
-        {/* Opsi area akan diisi dari API nanti */}
+        {areas && areas.map(a => (
+            <option key={a.strArea} value={a.strArea}>{a.strArea}</option>
+        ))}
       </select>
       <button type="submit">Search</button>
       <button type="button" onClick={onRandomRecipe}>Random Recipe</button>
