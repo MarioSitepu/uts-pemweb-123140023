@@ -9,6 +9,8 @@ function App() {
   const [categories, setCategories] = useState([]);
   const [areas, setAreas] = useState([]);
   const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const getInitialData = async () => {
@@ -21,22 +23,49 @@ function App() {
   }, []);
 
   const handleSearch = async (params) => {
-    const result = await searchMeals(params);
-    setMeals(result || []);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const results = await searchMeals(params);
+      setMeals(results || []);
+    } catch (err) {
+      setError('Failed to fetch meals. Please try again later.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFilterByArea = async (area) => {
-    if (area) {
-      const result = await filterByArea(area);
-      setMeals(result || []);
-    } else {
-      setMeals([]);
+    setIsLoading(true);
+    setError(null);
+    try {
+      if (area) {
+        const result = await filterByArea(area);
+        setMeals(result || []);
+      } else {
+        setMeals([]);
+      }
+    } catch (err) {
+      setError('Failed to fetch meals. Please try again later.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleRandomRecipe = async () => {
-    const result = await getRandomRecipe();
-    setMeals(result ? [result] : []);
+    setIsLoading(true);
+    setError(null);
+    try {
+      const result = await getRandomRecipe();
+      setMeals(result ? [result] : []);
+    } catch (err) {
+      setError('Failed to fetch meals. Please try again later.');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -50,7 +79,9 @@ function App() {
           categories={categories}
           areas={areas}
         />
-        <DataTable meals={meals} />
+        {isLoading && <p>Loading...</p>}
+        {error && <p className="error-message">{error}</p>}
+        {!isLoading && !error && <DataTable meals={meals} />}
       </main>
       {/* ... footer */}
     </div>
