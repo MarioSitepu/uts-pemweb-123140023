@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import './App.css';
 import SearchForm from './components/SearchForm';
-import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe } from './api/mealsAPI';
+import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe, getMultipleRandomRecipes } from './api/mealsAPI';
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
 
@@ -23,6 +23,13 @@ function App() {
   // State untuk loading dan error handling
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  // State untuk pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12; // 12 card per halaman (3 baris x 4 kolom)
+  
+  // Ref untuk menandai apakah random recipe sudah ditampilkan saat initial load
+  const hasInitialRandomRecipe = useRef(false);
 
   /**
    * Fetch categories dan areas saat component mount
@@ -39,6 +46,36 @@ function App() {
   }, []);
 
   /**
+   * Fetch multiple random recipes saat pertama kali halaman dibuka
+   * Hanya dijalankan sekali saat component mount
+   * Fetch 20 random recipes untuk pagination
+   */
+  useEffect(() => {
+    const loadInitialRandomRecipes = async () => {
+      // Hanya load random recipes sekali saat pertama kali dibuka
+      if (!hasInitialRandomRecipe.current) {
+        hasInitialRandomRecipe.current = true;
+        setIsLoading(true);
+        setError(null);
+        try {
+          // Fetch 20 random recipes untuk pagination
+          const randomMeals = await getMultipleRandomRecipes(20);
+          setMeals(randomMeals || []);
+          setCurrentPage(1); // Reset ke halaman pertama
+        } catch (err) {
+          setError('Failed to fetch random recipes. Please try again later.');
+          console.error(err);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadInitialRandomRecipes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /**
    * Handler untuk pencarian meal
    * Mendukung pencarian berdasarkan searchTerm dan/atau category
    * @param {Object} params - Parameter pencarian
@@ -51,6 +88,7 @@ function App() {
     try {
       const results = await searchMeals(params);
       setMeals(results || []);
+      setCurrentPage(1); // Reset ke halaman pertama saat search
     } catch (err) {
       setError('Failed to fetch meals. Please try again later.');
       console.error(err);
@@ -68,6 +106,7 @@ function App() {
     if (!area) {
       // Jika area dipilih kembali ke "All Areas", kosongkan hasil
       setMeals([]);
+      setCurrentPage(1);
       return;
     }
     setIsLoading(true);
@@ -75,6 +114,7 @@ function App() {
     try {
       const results = await filterByArea(area);
       setMeals(results || []);
+      setCurrentPage(1); // Reset ke halaman pertama saat filter
     } catch (err) {
       setError('Failed to filter by area.');
       console.error(err);
@@ -84,24 +124,33 @@ function App() {
   };
 
   /**
-   * Handler untuk mendapatkan random recipe
-   * Saat ini menampilkan alert, nantinya akan dinavigasi ke detail page
+   * Handler untuk mendapatkan random recipes
+   * Menampilkan 20 random recipes di DataTable dengan pagination
    */
   const handleRandomRecipe = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const randomMeal = await getRandomRecipe();
-      // Untuk sementara, kita tampilkan di console. Nanti akan dinavigasi.
-      console.log('Random Recipe:', randomMeal);
-      // TODO: Navigate to detail page
-      alert(`Random Recipe: ${randomMeal.strMeal}. Check console for details.`);
+      // Fetch 20 random recipes untuk pagination
+      const randomMeals = await getMultipleRandomRecipes(20);
+      setMeals(randomMeals || []);
+      setCurrentPage(1); // Reset ke halaman pertama
     } catch (err) {
-      setError('Failed to fetch a random recipe.');
+      setError('Failed to fetch random recipes.');
       console.error(err);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  /**
+   * Handler untuk perubahan halaman pagination
+   * @param {number} page - Nomor halaman yang dipilih
+   */
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll ke atas saat ganti halaman
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -120,7 +169,14 @@ function App() {
               />
               {isLoading && <p>Loading...</p>}
               {error && <p className="error-message">{error}</p>}
-              {!isLoading && !error && <DataTable meals={meals} />}
+              {!isLoading && !error && (
+                <DataTable 
+                  meals={meals} 
+                  currentPage={currentPage}
+                  itemsPerPage={itemsPerPage}
+                  onPageChange={handlePageChange}
+                />
+              )}
             </>
           } />
           <Route path="/recipe/:id" element={<DetailCard />} />

@@ -72,6 +72,29 @@ export const getRandomRecipe = async () => {
 };
 
 /**
+ * Mendapatkan multiple random recipes dari API
+ * @param {number} count - Jumlah random recipes yang ingin diambil
+ * @returns {Promise<Array>} Array of random meal objects
+ */
+export const getMultipleRandomRecipes = async (count = 20) => {
+  const promises = [];
+  for (let i = 0; i < count; i++) {
+    promises.push(getRandomRecipe());
+  }
+  const results = await Promise.all(promises);
+  // Filter out duplicates berdasarkan ID
+  const uniqueMeals = [];
+  const seenIds = new Set();
+  results.forEach(meal => {
+    if (meal && !seenIds.has(meal.idMeal)) {
+      seenIds.add(meal.idMeal);
+      uniqueMeals.push(meal);
+    }
+  });
+  return uniqueMeals;
+};
+
+/**
  * Mendapatkan detail meal lengkap berdasarkan ID
  * @param {string} id - ID meal
  * @returns {Promise<Object>} Meal object dengan detail lengkap
