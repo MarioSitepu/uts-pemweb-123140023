@@ -161,11 +161,47 @@ Menampilkan informasi lengkap:
 - **Hover Effects**: Transform scale dan shadow yang meningkat
 - **Typography**: System fonts (San Francisco, Segoe UI, Roboto)
 
-**📸 Untuk Screenshot**: 
-1. Jalankan `npm start` 
-2. Buka `http://localhost:3000`
-3. Capture screenshot dengan browser DevTools (F12 → Device Toolbar)
-4. Gunakan mode responsive untuk berbagai ukuran layar
+**📸 Screenshot Aplikasi Web**: 
+
+### 🏠 Halaman Beranda (Desktop)
+Tampilan utama aplikasi dengan form pencarian dan grid layout resep. Menampilkan header dengan logo, form pencarian multi-filter, dan 12 resep cards dalam format grid responsif.
+
+![Halaman Beranda Desktop](features-images/homescreen.png)
+
+### 📱 Halaman Beranda (Mobile)
+Tampilan responsif aplikasi di perangkat mobile. Layout beradaptasi dengan sempurna untuk layar kecil dengan form pencarian yang tetap mudah digunakan.
+
+![Halaman Beranda Mobile](features-images/homescreen-phone.png)
+
+### 🔍 Dropdown Kategori
+Menu dropdown untuk memfilter resep berdasarkan kategori. Menampilkan 14 kategori yang tersedia seperti Beef, Chicken, Dessert, dan lainnya.
+
+![Dropdown Kategori](features-images/categories-dropdown.png)
+
+### 🌍 Dropdown Area
+Menu dropdown untuk memfilter resep berdasarkan area/negara. Menampilkan 25+ area dari berbagai negara seperti American, Italian, Japanese, dan lainnya.
+
+![Dropdown Area](features-images/areas-dropdown.png)
+
+### 🎯 Filter dengan Hover Effect
+Tampilan card resep dengan efek hover yang interaktif. Saat cursor diarahkan ke card, muncul overlay dengan teks "View Recipe →" dan efek transform scale.
+
+![Filter dengan Hover Effect](features-images/filter&hover.png)
+
+### 📝 Halaman Detail Resep
+Halaman detail lengkap resep dengan gambar besar, informasi meta (Category, Area, Tags), daftar bahan lengkap dengan takaran, dan instruksi step-by-step.
+
+![Halaman Detail Resep](features-images/recipedetail.png)
+
+### ⏳ Loading Screen
+Animasi loading yang menarik dengan spinner dan pesan "Loading delicious recipes...". Menunjukkan status loading saat aplikasi mengambil data dari API.
+
+![Loading Screen](features-images/loadingscreen.png)
+
+### ❌ Error State - Validasi Filter
+Pesan error yang muncul ketika user mencoba melakukan pencarian tanpa memilih parameter apapun (semua field kosong). Pesan error ditampilkan dalam bahasa Inggris dengan styling yang sesuai tema.
+
+![Error State - Validasi Filter](features-images/errornofilter.png)
 
 ---
 
