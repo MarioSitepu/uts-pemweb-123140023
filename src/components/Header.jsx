@@ -1,5 +1,9 @@
 import React from 'react';
 
+/**
+ * Header Component
+ * Komponen header aplikasi dengan judul utama
+ */
 const Header = () => {
   return (
     <header className="app-header">

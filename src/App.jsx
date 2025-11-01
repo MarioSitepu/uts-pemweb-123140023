@@ -7,13 +7,27 @@ import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
 
+/**
+ * App Component
+ * Komponen utama aplikasi Recipe Finder
+ * Mengelola state global dan routing
+ */
 function App() {
+  // State untuk menyimpan data categories dan areas
   const [categories, setCategories] = useState([]);
   const [areas, setAreas] = useState([]);
+  
+  // State untuk menyimpan hasil pencarian meals
   const [meals, setMeals] = useState([]);
+  
+  // State untuk loading dan error handling
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  /**
+   * Fetch categories dan areas saat component mount
+   * Data ini digunakan untuk dropdown filter di SearchForm
+   */
   useEffect(() => {
     const getInitialData = async () => {
       const fetchedCategories = await fetchCategories();
@@ -24,6 +38,13 @@ function App() {
     getInitialData();
   }, []);
 
+  /**
+   * Handler untuk pencarian meal
+   * Mendukung pencarian berdasarkan searchTerm dan/atau category
+   * @param {Object} params - Parameter pencarian
+   * @param {string} params.searchTerm - Kata kunci pencarian
+   * @param {string} params.category - Kategori meal
+   */
   const handleSearch = async (params) => {
     setIsLoading(true);
     setError(null);
@@ -38,6 +59,11 @@ function App() {
     }
   };
 
+  /**
+   * Handler untuk filter meal berdasarkan area
+   * Jika area kosong (All Areas), kosongkan hasil
+   * @param {string} area - Nama area/country untuk filter
+   */
   const handleFilterByArea = async (area) => {
     if (!area) {
       // Jika area dipilih kembali ke "All Areas", kosongkan hasil
@@ -57,6 +83,10 @@ function App() {
     }
   };
 
+  /**
+   * Handler untuk mendapatkan random recipe
+   * Saat ini menampilkan alert, nantinya akan dinavigasi ke detail page
+   */
   const handleRandomRecipe = async () => {
     setIsLoading(true);
     setError(null);
