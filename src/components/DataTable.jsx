@@ -42,10 +42,15 @@ const DataTable = ({ meals, currentPage = 1, itemsPerPage = 4, onPageChange }) =
             aria-label={`View details for ${meal.strMeal}`}
           >
             <div className="meal-card">
-              <img 
-                src={meal.strMealThumb} 
-                alt={`A picture of ${meal.strMeal}`} 
-              />
+              <div className="meal-image-wrapper">
+                <img 
+                  src={meal.strMealThumb} 
+                  alt={`A picture of ${meal.strMeal}`} 
+                />
+                <div className="meal-overlay">
+                  <span className="view-recipe-text">View Recipe →</span>
+                </div>
+              </div>
               <div className="meal-info">
                 <h3>{meal.strMeal}</h3>
                 <p>{meal.strArea}</p>

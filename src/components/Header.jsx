@@ -9,8 +9,13 @@ const Header = () => {
   return (
     <header className="app-header">
       <div className="header-content">
-        <img src={logo} alt="Recipe Finder Logo" className="header-logo" />
-        <h1>Recipe Finder</h1>
+        <div className="header-top">
+          <img src={logo} alt="Recipe Finder Logo" className="header-logo" />
+          <h1>Recipe Finder</h1>
+        </div>
+        <p className="header-tagline">
+          Find your daily culinary inspiration with Recipe Finder, which brings easy, detailed recipes from global kitchens straight to your fingertips.
+        </p>
       </div>
     </header>
   );

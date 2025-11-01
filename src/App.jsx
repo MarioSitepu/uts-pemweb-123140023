@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
+import Footer from './components/Footer';
 import './App.css';
 import SearchForm from './components/SearchForm';
 import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe, getMultipleRandomRecipes } from './api/mealsAPI';
@@ -183,7 +184,7 @@ function App() {
           <Route path="/recipe/:id" element={<DetailCard />} />
         </Routes>
       </main>
-      {/* ... footer */}
+      <Footer />
     </div>
   );
 }
