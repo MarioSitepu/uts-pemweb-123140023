@@ -6,6 +6,48 @@
 const BASE_URL = 'https://www.themealdb.com/api/json/v1/1/';
 
 /**
+ * Membersihkan instruksi dari format "Step 1:", "Step 2:", dll.
+ * Menghapus pola seperti "Step 1:", "STEP 1:", "Step 1 -", dll.
+ * Tetap mempertahankan line breaks untuk pemisahan paragraf
+ * @param {string} instructions - Instruksi mentah dari API
+ * @returns {string} Instruksi yang sudah dibersihkan
+ */
+const cleanInstructions = (instructions) => {
+  if (!instructions) return '';
+  
+  // Pisahkan berdasarkan line breaks untuk memproses setiap baris secara terpisah
+  const lines = instructions.split('\n');
+  
+  // Pola regex untuk menghapus berbagai format step numbering
+  // Menghapus: "Step 1:", "STEP 1:", "Step 1 -", "Step 1.", "Step 1)", dll.
+  const stepPatterns = [
+    /Step\s+\d+\s*[-:.)]\s*/gi,      // "Step 1:", "Step 1 -", "Step 1.", "Step 1)"
+    /STEP\s+\d+\s*[-:.)]\s*/gi,      // "STEP 1:", "STEP 1 -", dll.
+    /step\s+\d+\s*[-:.)]\s*/gi,      // "step 1:", dll.
+    /^\d+\.\s+/gm,                    // "1. ", "2. " di awal baris
+    /^\d+\s*[-:)]\s+/gm,              // "1:", "1-", "1)" di awal baris
+  ];
+  
+  // Bersihkan setiap baris secara terpisah
+  const cleanedLines = lines.map(line => {
+    let cleaned = line;
+    
+    // Terapkan setiap pola regex
+    stepPatterns.forEach(pattern => {
+      cleaned = cleaned.replace(pattern, '');
+    });
+    
+    // Bersihkan spasi ganda di dalam baris (tapi tetap pertahankan line breaks)
+    cleaned = cleaned.replace(/\s+/g, ' ').trim();
+    
+    return cleaned;
+  });
+  
+  // Gabungkan kembali dengan line breaks
+  return cleanedLines.filter(line => line.length > 0).join('\n');
+};
+
+/**
  * Fetch semua kategori meal yang tersedia
  * @returns {Promise<Array>} Array kategori meal
  */
@@ -95,7 +137,11 @@ export const filterByCategory = async (category) => {
 export const getRandomRecipe = async () => {
   const response = await fetch(`${BASE_URL}random.php`);
   const data = await response.json();
-  return data.meals[0];
+  const meal = data.meals[0];
+  if (meal && meal.strInstructions) {
+    meal.strInstructions = cleanInstructions(meal.strInstructions);
+  }
+  return meal;
 };
 
 /**
@@ -129,5 +175,9 @@ export const getMultipleRandomRecipes = async (count = 20) => {
 export const getMealById = async (id) => {
   const response = await fetch(`${BASE_URL}lookup.php?i=${id}`);
   const data = await response.json();
-  return data.meals[0];
+  const meal = data.meals[0];
+  if (meal && meal.strInstructions) {
+    meal.strInstructions = cleanInstructions(meal.strInstructions);
+  }
+  return meal;
 };
