@@ -53,7 +53,7 @@ const DataTable = ({ meals, currentPage = 1, itemsPerPage = 4, onPageChange }) =
               </div>
               <div className="meal-info">
                 <h3>{meal.strMeal}</h3>
-                <p>{meal.strArea}</p>
+                {meal.strArea && <p>{meal.strArea}</p>}
               </div>
             </div>
           </Link>

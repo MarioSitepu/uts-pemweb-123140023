@@ -69,6 +69,13 @@
 - **Filter Kategori**: Filter resep berdasarkan kategori (Beef, Chicken, Dessert, dll)
 - **Filter Area**: Temukan resep khas dari berbagai negara dan wilayah
 - **Kombinasi Filter**: Gabungkan multiple filter untuk hasil pencarian yang lebih spesifik
+- **Pencarian Fleksibel**: 
+  - Pencarian hanya dengan keyword (All Categories, All Areas) ✅
+  - Pencarian hanya dengan category (All Areas, tanpa keyword) ✅
+  - Pencarian hanya dengan area (All Categories, tanpa keyword) ✅
+  - Detail lengkap termasuk area ditampilkan pada setiap card resep
+- **Validasi Input**: Sistem validasi memastikan minimal memilih salah satu parameter pencarian
+- **Error Handling**: Pesan error yang jelas dan informatif dalam bahasa Inggris dengan styling yang sesuai tema
 
 ### 🎲 **Random Recipe**
 - **Acak Resep**: Klik tombol "Random Recipe" untuk mendapatkan resep acak
@@ -333,16 +340,26 @@ User ingin mencari resep "Chicken":
 2. Klik tombol "Search"
 3. Hasil: Daftar semua resep yang mengandung kata "Chicken"
 
-#### **Skenario 2: Filter Kategori**
+#### **Skenario 2: Filter Kategori (Fleksibel)**
 User ingin melihat semua dessert:
 1. Pilih "Dessert" dari dropdown Category
-2. Klik tombol "Search"
-3. Hasil: Semua resep dessert
+2. Pastikan Area tetap "All Areas" (default)
+3. Pastikan Search box kosong
+4. Klik tombol "Search"
+5. Hasil: Semua resep dessert dengan detail lengkap termasuk area negara asal
 
 #### **Skenario 3: Filter Area**
 User ingin resep dari Italia:
 1. Pilih "Italian" dari dropdown Area
 2. Hasil: Semua resep masakan Italia
+
+#### **Skenario 3A: Pencarian Hanya dengan Keyword**
+User ingin mencari resep dengan keyword tertentu tanpa filter:
+1. Ketik "pasta" di search box
+2. Pastikan Category tetap "All Categories" (default)
+3. Pastikan Area tetap "All Areas" (default)
+4. Klik tombol "Search"
+5. Hasil: Semua resep yang mengandung kata "pasta"
 
 #### **Skenario 4: Kombinasi Filter**
 User ingin dessert dari Amerika:
@@ -365,14 +382,25 @@ User ingin melihat cara membuat suatu resep:
    - Instruksi step-by-step
    - Link video YouTube (jika ada)
 
+#### **Skenario 7: Validasi Input**
+User mencoba search tanpa memilih parameter apapun:
+1. Pastikan Search box kosong
+2. Pastikan Category: "All Categories"
+3. Pastikan Area: "All Areas"
+4. Klik tombol "Search"
+5. Hasil: Pesan error muncul dengan pesan "Please select at least one search option (keyword, category, or area)" dalam bahasa Inggris dengan styling yang sesuai tema
+
 ### 🔍 Contoh Query & Hasil
 
 | Query | Type | Jumlah Resep |
 |-------|------|--------------|
-| "chicken" | Search by name | ~300+ |
-| "Beef" | Category | ~100+ |
-| "Italian" | Area | ~200+ |
-| "Dessert" + "American" | Combined | ~50+ |
+| "chicken" | Search by name (All Categories, All Areas) | ~300+ |
+| "Beef" | Category only (All Areas, no keyword) | ~100+ |
+| "Italian" | Area only (All Categories, no keyword) | ~200+ |
+| "pasta" | Keyword only (All Categories, All Areas) | ~100+ |
+| "Dessert" + "American" | Combined (Category + Area) | ~50+ |
+| "chicken" + "Beef" | Keyword + Category | Varies |
+| All empty | Invalid (shows error message) | 0 |
 | Random | Random | 20 |
 
 ---
@@ -415,28 +443,36 @@ Memfilter resep berdasarkan area/negara.
 // Return: Array of meal objects (lightweight)
 ```
 
-#### 5. **getMealById(id)**
+#### 5. **filterByCategory(category)**
+Memfilter resep berdasarkan kategori.
+```javascript
+// GET https://www.themealdb.com/api/json/v1/1/filter.php?c=Dessert
+// Return: Array of meal objects (lightweight)
+// Note: Detail lengkap diambil menggunakan getMealDetailsByIds() untuk menampilkan area di card
+```
+
+#### 6. **getMealById(id)**
 Mendapatkan detail lengkap satu resep.
 ```javascript
 // GET https://www.themealdb.com/api/json/v1/1/lookup.php?i=52772
 // Return: Single meal object with full details
 ```
 
-#### 6. **getMealDetailsByIds(ids)**
+#### 7. **getMealDetailsByIds(ids)**
 Mendapatkan detail lengkap multiple resep.
 ```javascript
 // Batch request untuk multiple IDs
 // Return: Array of meal objects
 ```
 
-#### 7. **getRandomRecipe()**
+#### 8. **getRandomRecipe()**
 Mendapatkan satu resep acak.
 ```javascript
 // GET https://www.themealdb.com/api/json/v1/1/random.php
 // Return: Single random meal object
 ```
 
-#### 8. **getMultipleRandomRecipes(count)**
+#### 9. **getMultipleRandomRecipes(count)**
 Mendapatkan multiple resep acak dengan deteksi duplikasi.
 ```javascript
 // Fetch 'count' random recipes dengan Promise.all()

@@ -77,6 +77,18 @@ export const filterByArea = async (area) => {
 };
 
 /**
+ * Filter meals berdasarkan category
+ * @param {string} category - Nama category untuk filter
+ * @returns {Promise<Array>} Array meal dari category tertentu
+ */
+export const filterByCategory = async (category) => {
+  const response = await fetch(`${BASE_URL}filter.php?c=${category}`);
+  const data = await response.json();
+  // Pastikan selalu mengembalikan array, bukan null
+  return data.meals || [];
+};
+
+/**
  * Mendapatkan random recipe dari API
  * @returns {Promise<Object>} Random meal object
  */

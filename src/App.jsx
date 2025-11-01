@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import './App.css';
 import SearchForm from './components/SearchForm';
-import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe, getMultipleRandomRecipes, getMealDetailsByIds } from './api/mealsAPI';
+import { fetchCategories, fetchAreas, searchMeals, filterByArea, filterByCategory, getRandomRecipe, getMultipleRandomRecipes, getMealDetailsByIds } from './api/mealsAPI';
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
 import Loading from './components/Loading';
@@ -90,9 +90,19 @@ function App() {
     setError(null);
     try {
       let results = [];
+      const hasSearchTerm = searchTerm && searchTerm.trim();
+      const hasCategory = category && category.trim();
+      const hasArea = area && area.trim();
+
+      // Validasi: minimal pilih salah satu search (keyword, category, atau area)
+      if (!hasSearchTerm && !hasCategory && !hasArea) {
+        setError('Please select at least one search option (keyword, category, or area)');
+        setIsLoading(false);
+        return;
+      }
 
       // Jika ada area, gunakan filter by area terlebih dahulu
-      if (area) {
+      if (hasArea) {
         const areaResults = await filterByArea(area);
         // Filter by area hanya mengembalikan data ringan (id, name, thumb)
         // Kita perlu mengambil detail lengkap untuk filter berdasarkan category/searchTerm
@@ -101,27 +111,48 @@ function App() {
           // Ambil detail lengkap semua meal dari area tersebut
           results = await getMealDetailsByIds(mealIds);
         }
-      } else {
-        // Jika tidak ada area, gunakan search biasa
-        results = await searchMeals({ searchTerm, category }) || [];
+      } 
+      // Jika hanya category dipilih (tanpa area, tanpa searchTerm), gunakan filter by category
+      // Filter by category hanya mengembalikan data ringan (id, name, thumb)
+      // Kita perlu mengambil detail lengkap agar strArea tersedia di card
+      else if (hasCategory && !hasSearchTerm) {
+        const categoryResults = await filterByCategory(category);
+        if (categoryResults && categoryResults.length > 0) {
+          const mealIds = categoryResults.map(meal => meal.idMeal);
+          // Ambil detail lengkap semua meal dari category tersebut
+          results = await getMealDetailsByIds(mealIds);
+        }
+      }
+      // Jika hanya searchTerm dipilih (tanpa category, tanpa area), gunakan search API
+      else if (hasSearchTerm && !hasCategory) {
+        results = await searchMeals({ searchTerm, category: '' }) || [];
+      }
+      // Jika ada searchTerm dan category (tanpa area), gunakan search lalu filter
+      else if (hasSearchTerm && hasCategory) {
+        const searchResults = await searchMeals({ searchTerm, category: '' }) || [];
+        // Filter berdasarkan category
+        results = searchResults.filter(meal => 
+          meal.strCategory && meal.strCategory.toLowerCase() === category.toLowerCase()
+        );
+      }
+      // Jika tidak ada parameter, kembalikan array kosong atau bisa juga random recipes
+      else {
+        results = [];
       }
 
-      // Filter hasil berdasarkan searchTerm dan category jika diperlukan
-      if (results.length > 0) {
-        // Filter berdasarkan searchTerm (jika ada)
-        if (searchTerm && searchTerm.trim()) {
-          const searchLower = searchTerm.toLowerCase().trim();
-          results = results.filter(meal => 
-            meal.strMeal && meal.strMeal.toLowerCase().includes(searchLower)
-          );
-        }
+      // Filter hasil berdasarkan searchTerm jika area digunakan (karena sudah diambil detail lengkap)
+      if (hasArea && results.length > 0 && hasSearchTerm) {
+        const searchLower = searchTerm.toLowerCase().trim();
+        results = results.filter(meal => 
+          meal.strMeal && meal.strMeal.toLowerCase().includes(searchLower)
+        );
+      }
 
-        // Filter berdasarkan category (jika ada)
-        if (category && category.trim()) {
-          results = results.filter(meal => 
-            meal.strCategory && meal.strCategory.toLowerCase() === category.toLowerCase()
-          );
-        }
+      // Filter hasil berdasarkan category jika area digunakan (karena sudah diambil detail lengkap)
+      if (hasArea && results.length > 0 && hasCategory) {
+        results = results.filter(meal => 
+          meal.strCategory && meal.strCategory.toLowerCase() === category.toLowerCase()
+        );
       }
 
       setMeals(results || []);
