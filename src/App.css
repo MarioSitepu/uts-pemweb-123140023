@@ -151,25 +151,163 @@ main > p:not(.error-message) {
 .detail-card {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 2rem 1rem;
 }
 
-.back-link {
-  display: inline-block;
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+/* Loading Spinner Styles */
+.loading-spinner {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 2rem;
+}
+
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 4px solid transparent;
+  border-top-color: #FF6B35;
+  border-right-color: #FF8C42;
+  border-radius: 50%;
+  animation: spin 1.5s linear infinite;
+}
+
+.spinner-ring:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.spinner-ring:nth-child(2) {
+  width: 70%;
+  height: 70%;
+  top: 15%;
+  left: 15%;
+  border-top-color: #FF8C42;
+  border-right-color: #FF6B35;
+  animation-delay: -0.5s;
+  animation-duration: 1.2s;
+}
+
+.spinner-ring:nth-child(3) {
+  width: 50%;
+  height: 50%;
+  top: 25%;
+  left: 25%;
+  border-top-color: #FF6B35;
+  border-right-color: #FF8C42;
+  animation-delay: -0.3s;
+  animation-duration: 1s;
+}
+
+.spinner-ring:nth-child(4) {
+  width: 30%;
+  height: 30%;
+  top: 35%;
+  left: 35%;
+  border-top-color: #FF8C42;
+  border-right-color: #FF6B35;
+  animation-delay: -0.1s;
+  animation-duration: 0.8s;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  font-size: 1.3rem;
+  color: #FF6B35;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(255, 107, 53, 0.2);
+}
+
+/* Loading Dots Animation */
+.loading-dots {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.loading-dots .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  border: 2px solid #000;
+  animation: bounce 1.4s ease-in-out infinite both;
+  box-shadow: 0 2px 4px rgba(255, 107, 53, 0.3);
+}
+
+.loading-dots .dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.loading-dots .dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.loading-dots .dot:nth-child(3) {
+  animation-delay: 0s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   margin-bottom: 2rem;
   color: #FF6B35;
   text-decoration: none;
   font-weight: 600;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 8px;
   transition: all 0.3s ease;
-  border: 2px solid transparent;
+  border: 2px solid #FF6B35;
+  background: white;
 }
 
-.back-link:hover {
-  background-color: #FF6B35;
+.back-button:hover {
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
   color: white;
   border-color: #000;
+  transform: translateX(-5px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
 }
 
 .detail-header {
@@ -178,121 +316,295 @@ main > p:not(.error-message) {
   margin-bottom: 2rem;
   background: white;
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.detail-header:hover {
+  border-color: #FF6B35;
+  box-shadow: 0 8px 20px rgba(255, 107, 53, 0.2);
 }
 
 .detail-header img {
   width: 400px;
   height: 400px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 3px solid #000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.detail-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .detail-info h1 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 1.5rem 0;
   color: #333;
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  border-bottom: 3px solid #FF6B35;
+  padding-bottom: 1rem;
 }
 
-.detail-info p {
-  margin: 0.5rem 0;
-  color: #666;
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.meta-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  color: white;
+  border-radius: 8px;
+  border: 2px solid #000;
+  font-size: 0.9rem;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+}
+
+.meta-badge strong {
+  margin-right: 0.5rem;
 }
 
 .detail-content {
   background: white;
   padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+}
+
+.detail-content:hover {
+  border-color: #FF6B35;
 }
 
 .ingredients-section,
 .instructions-section,
 .video-section {
-  margin-bottom: 2rem;
+  margin-bottom: 3rem;
+}
+
+.ingredients-section:last-child,
+.instructions-section:last-child,
+.video-section:last-child {
+  margin-bottom: 0;
 }
 
 .ingredients-section h2,
 .instructions-section h2,
 .video-section h2 {
   color: #333;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #FF6B35;
 }
 
-.ingredients-section ul {
+.section-icon {
+  font-size: 1.5rem;
+}
+
+.ingredients-list {
   list-style-type: none;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 0.75rem;
 }
 
-.ingredients-section li {
-  padding: 0.5rem;
-  border-bottom: 1px solid #eee;
+.ingredients-list li {
+  padding: 0.75rem 1rem;
+  background: #FAF5F0;
+  border-radius: 8px;
+  border-left: 4px solid #FF6B35;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
 }
 
-.instructions-section p {
+.ingredients-list li:hover {
+  background: #fff5f0;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.2);
+}
+
+.ingredient-bullet {
+  color: #FF6B35;
+  font-weight: bold;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.instructions-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.instruction-step {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  background: #FAF5F0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border-left: 5px solid #FF6B35;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.instruction-step:hover {
+  background: #fff5f0;
+  border-left-color: #FF8C42;
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+}
+
+.step-number {
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 100%);
+  color: white;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border: 3px solid #000;
+  box-shadow: 0 4px 8px rgba(255, 107, 53, 0.3);
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-content p {
+  margin: 0;
   line-height: 1.8;
   color: #555;
-  white-space: pre-line;
+  font-size: 1rem;
+  text-align: justify;
 }
 
 .youtube-link {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  background-color: #ff0000;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
   color: white;
   text-decoration: none;
-  border-radius: 5px;
-  font-weight: 500;
-  transition: background-color 0.2s;
+  border-radius: 8px;
+  font-weight: 600;
+  border: 2px solid #000;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(255, 0, 0, 0.3);
+  font-size: 1rem;
 }
 
 .youtube-link:hover {
-  background-color: #cc0000;
+  background: linear-gradient(135deg, #cc0000 0%, #ff0000 100%);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(255, 0, 0, 0.4);
+}
+
+.youtube-link::after {
+  content: '▶';
+  font-size: 0.9rem;
 }
 
 @media (max-width: 768px) {
+  .loading-container {
+    min-height: 300px;
+    padding: 2rem 1rem;
+  }
+  
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 1.5rem;
+  }
+  
+  .loading-text {
+    font-size: 1.1rem;
+  }
+  
+  .loading-dots .dot {
+    width: 10px;
+    height: 10px;
+  }
+  
+  .detail-card {
+    padding: 1rem 0.5rem;
+  }
+  
   .detail-header {
     flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.5rem;
   }
   
   .detail-header img {
     width: 100%;
     height: auto;
+    max-height: 300px;
   }
-}
-
-.detail-card {
-  padding: 1rem;
-}
-.back-button {
-  display: inline-block;
-  margin-bottom: 1rem;
-  text-decoration: none;
-  color: #FF6B35;
-  font-weight: 600;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-}
-
-.back-button:hover {
-  background-color: #FF6B35;
-  color: white;
-  border-color: #000;
-}
-.detail-content img {
-  max-width: 300px;
-  float: left;
-  margin-right: 1.5rem;
-  border-radius: 8px;
-}
-.detail-content h1, .detail-content h2 {
-  clear: none;
-}
-.detail-content ul {
-  list-style-type: disc;
-  padding-left: 20px;
+  
+  .detail-info h1 {
+    font-size: 1.8rem;
+  }
+  
+  .detail-meta {
+    flex-direction: column;
+  }
+  
+  .meta-badge {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .ingredients-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .instructions-section h2,
+  .ingredients-section h2,
+  .video-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .instruction-step {
+    flex-direction: row;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .step-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    border-width: 2px;
+  }
+  
+  .step-content p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
 }
 
 /* Pagination Styles */
@@ -403,5 +715,28 @@ main > p:not(.error-message) {
   
   .data-table {
     grid-template-columns: 1fr; /* 1 kolom di mobile kecil */
+  }
+  
+  .instruction-step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  
+  .step-number {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
+  }
+  
+  .step-content {
+    width: 100%;
+  }
+  
+  .step-content p {
+    text-align: left;
+    font-size: 0.9rem;
   }
 }

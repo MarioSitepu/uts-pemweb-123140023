@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getMealById } from '../api/mealsAPI';
+import Loading from './Loading';
 
 /**
  * DetailCard Component
@@ -35,10 +36,27 @@ const DetailCard = () => {
   }, [id]);
 
   // Loading state
-  if (isLoading) return <p>Loading details...</p>;
+  if (isLoading) {
+    return (
+      <div className="detail-card">
+        <Loading message="Loading recipe details..." />
+      </div>
+    );
+  }
   
   // Error state jika meal tidak ditemukan
-  if (!meal) return <p>Meal not found.</p>;
+  if (!meal) {
+    return (
+      <div className="detail-card">
+        <Link to="/" className="back-button" aria-label="Back to search page">
+          &larr; Back to Search
+        </Link>
+        <div className="error-container">
+          <p className="error-message">Meal not found. Please try searching again.</p>
+        </div>
+      </div>
+    );
+  }
 
   /**
    * Ekstrak ingredients dan measures dari meal object
@@ -63,20 +81,82 @@ const DetailCard = () => {
       >
         &larr; Back to Search
       </Link>
-      <div className="detail-content">
+      
+      <div className="detail-header">
         <img 
           src={meal.strMealThumb} 
           alt={`A picture of ${meal.strMeal}`} 
         />
-        <h1>{meal.strMeal}</h1>
-        <h2>Ingredients</h2>
-        <ul>
-          {ingredients.map((ing, index) => (
-            <li key={index}>{ing}</li>
-          ))}
-        </ul>
-        <h2>Instructions</h2>
-        <p>{meal.strInstructions}</p>
+        <div className="detail-info">
+          <h1>{meal.strMeal}</h1>
+          <div className="detail-meta">
+            {meal.strCategory && (
+              <span className="meta-badge">
+                <strong>Category:</strong> {meal.strCategory}
+              </span>
+            )}
+            {meal.strArea && (
+              <span className="meta-badge">
+                <strong>Area:</strong> {meal.strArea}
+              </span>
+            )}
+            {meal.strTags && (
+              <span className="meta-badge">
+                <strong>Tags:</strong> {meal.strTags.split(',').join(', ')}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="detail-content">
+        <div className="ingredients-section">
+          <h2>
+            <span className="section-icon">🍽️</span> Ingredients
+          </h2>
+          <ul className="ingredients-list">
+            {ingredients.map((ing, index) => (
+              <li key={index}>
+                <span className="ingredient-bullet">•</span>
+                {ing}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="instructions-section">
+          <h2>
+            <span className="section-icon">📝</span> Instructions
+          </h2>
+          <div className="instructions-text">
+            {meal.strInstructions.split('\n')
+              .filter(paragraph => paragraph.trim())
+              .map((paragraph, index) => (
+                <div key={index} className="instruction-step">
+                  <div className="step-number">{index + 1}</div>
+                  <div className="step-content">
+                    <p>{paragraph.trim()}</p>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+
+        {meal.strYoutube && (
+          <div className="video-section">
+            <h2>
+              <span className="section-icon">🎥</span> Video Tutorial
+            </h2>
+            <a 
+              href={meal.strYoutube} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="youtube-link"
+            >
+              Watch on YouTube
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

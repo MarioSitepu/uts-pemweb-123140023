@@ -6,6 +6,7 @@ import SearchForm from './components/SearchForm';
 import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe, getMultipleRandomRecipes } from './api/mealsAPI';
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
+import Loading from './components/Loading';
 
 /**
  * App Component
@@ -167,7 +168,7 @@ function App() {
                 categories={categories}
                 areas={areas}
               />
-              {isLoading && <p>Loading...</p>}
+              {isLoading && <Loading message="Loading delicious recipes..." />}
               {error && <p className="error-message">{error}</p>}
               {!isLoading && !error && (
                 <DataTable 
