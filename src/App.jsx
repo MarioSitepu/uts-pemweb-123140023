@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import './App.css';
 import SearchForm from './components/SearchForm';
 import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe } from './api/mealsAPI';
 import DataTable from './components/DataTable';
+import DetailCard from './components/DetailCard';
 
 function App() {
   const [categories, setCategories] = useState([]);
@@ -76,16 +78,23 @@ function App() {
     <div className="App">
       <Header />
       <main>
-        <SearchForm 
-          onSearch={handleSearch}
-          onFilterByArea={handleFilterByArea}
-          onRandomRecipe={handleRandomRecipe}
-          categories={categories}
-          areas={areas}
-        />
-        {isLoading && <p>Loading...</p>}
-        {error && <p className="error-message">{error}</p>}
-        {!isLoading && !error && <DataTable meals={meals} />}
+        <Routes>
+          <Route path="/" element={
+            <>
+              <SearchForm 
+                onSearch={handleSearch}
+                onFilterByArea={handleFilterByArea}
+                onRandomRecipe={handleRandomRecipe}
+                categories={categories}
+                areas={areas}
+              />
+              {isLoading && <p>Loading...</p>}
+              {error && <p className="error-message">{error}</p>}
+              {!isLoading && !error && <DataTable meals={meals} />}
+            </>
+          } />
+          <Route path="/recipe/:id" element={<DetailCard />} />
+        </Routes>
       </main>
       {/* ... footer */}
     </div>
