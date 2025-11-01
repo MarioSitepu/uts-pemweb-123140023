@@ -12,7 +12,8 @@ const BASE_URL = 'https://www.themealdb.com/api/json/v1/1/';
 export const fetchCategories = async () => {
   const response = await fetch(`${BASE_URL}categories.php`);
   const data = await response.json();
-  return data.categories;
+  // Pastikan selalu mengembalikan array, bukan null
+  return data.categories || [];
 };
 
 /**
@@ -22,7 +23,8 @@ export const fetchCategories = async () => {
 export const fetchAreas = async () => {
   const response = await fetch(`${BASE_URL}list.php?a=list`);
   const data = await response.json();
-  return data.meals;
+  // Pastikan selalu mengembalikan array, bukan null
+  return data.meals || [];
 };
 
 /**
@@ -47,7 +49,19 @@ export const searchMeals = async ({ searchTerm, category }) => {
   }
   const response = await fetch(url);
   const data = await response.json();
-  return data.meals;
+  // Pastikan selalu mengembalikan array, bukan null
+  return data.meals || [];
+};
+
+/**
+ * Mendapatkan multiple meal details berdasarkan array of IDs
+ * @param {Array<string>} ids - Array of meal IDs
+ * @returns {Promise<Array>} Array of meal objects dengan detail lengkap
+ */
+export const getMealDetailsByIds = async (ids) => {
+  const promises = ids.map(id => getMealById(id));
+  const results = await Promise.all(promises);
+  return results.filter(meal => meal !== null && meal !== undefined);
 };
 
 /**
@@ -58,7 +72,8 @@ export const searchMeals = async ({ searchTerm, category }) => {
 export const filterByArea = async (area) => {
   const response = await fetch(`${BASE_URL}filter.php?a=${area}`);
   const data = await response.json();
-  return data.meals;
+  // Pastikan selalu mengembalikan array, bukan null
+  return data.meals || [];
 };
 
 /**

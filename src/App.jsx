@@ -4,7 +4,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import './App.css';
 import SearchForm from './components/SearchForm';
-import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe, getMultipleRandomRecipes } from './api/mealsAPI';
+import { fetchCategories, fetchAreas, searchMeals, filterByArea, getRandomRecipe, getMultipleRandomRecipes, getMealDetailsByIds } from './api/mealsAPI';
 import DataTable from './components/DataTable';
 import DetailCard from './components/DetailCard';
 import Loading from './components/Loading';
@@ -78,17 +78,52 @@ function App() {
   }, []);
 
   /**
-   * Handler untuk pencarian meal
-   * Mendukung pencarian berdasarkan searchTerm dan/atau category
+   * Handler untuk pencarian meal dengan kombinasi parameter
+   * Mendukung kombinasi searchTerm, category, dan area
    * @param {Object} params - Parameter pencarian
    * @param {string} params.searchTerm - Kata kunci pencarian
    * @param {string} params.category - Kategori meal
+   * @param {string} params.area - Area/country untuk filter
    */
-  const handleSearch = async (params) => {
+  const handleSearch = async ({ searchTerm, category, area }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const results = await searchMeals(params);
+      let results = [];
+
+      // Jika ada area, gunakan filter by area terlebih dahulu
+      if (area) {
+        const areaResults = await filterByArea(area);
+        // Filter by area hanya mengembalikan data ringan (id, name, thumb)
+        // Kita perlu mengambil detail lengkap untuk filter berdasarkan category/searchTerm
+        if (areaResults && areaResults.length > 0) {
+          const mealIds = areaResults.map(meal => meal.idMeal);
+          // Ambil detail lengkap semua meal dari area tersebut
+          results = await getMealDetailsByIds(mealIds);
+        }
+      } else {
+        // Jika tidak ada area, gunakan search biasa
+        results = await searchMeals({ searchTerm, category }) || [];
+      }
+
+      // Filter hasil berdasarkan searchTerm dan category jika diperlukan
+      if (results.length > 0) {
+        // Filter berdasarkan searchTerm (jika ada)
+        if (searchTerm && searchTerm.trim()) {
+          const searchLower = searchTerm.toLowerCase().trim();
+          results = results.filter(meal => 
+            meal.strMeal && meal.strMeal.toLowerCase().includes(searchLower)
+          );
+        }
+
+        // Filter berdasarkan category (jika ada)
+        if (category && category.trim()) {
+          results = results.filter(meal => 
+            meal.strCategory && meal.strCategory.toLowerCase() === category.toLowerCase()
+          );
+        }
+      }
+
       setMeals(results || []);
       setCurrentPage(1); // Reset ke halaman pertama saat search
     } catch (err) {

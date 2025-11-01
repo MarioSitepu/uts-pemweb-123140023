@@ -18,22 +18,22 @@ const SearchForm = ({ onSearch, onFilterByArea, onRandomRecipe, categories, area
 
   /**
    * Handler untuk submit form pencarian
+   * Mengirim semua parameter (searchTerm, category, area) ke handler pencarian
    * @param {Event} e - Form submit event
    */
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSearch({ searchTerm, category });
+    // Kirim semua parameter untuk dikombinasikan
+    onSearch({ searchTerm, category, area });
   };
 
   /**
    * Handler untuk perubahan filter area
-   * Memanggil onFilterByArea langsung saat area berubah
+   * Hanya mengubah state, tidak langsung melakukan pencarian
    * @param {Event} e - Select change event
    */
-  const handleAreaFilter = (e) => {
-    const selectedArea = e.target.value;
-    setArea(selectedArea);
-    onFilterByArea(selectedArea);
+  const handleAreaChange = (e) => {
+    setArea(e.target.value);
   };
 
   return (
@@ -43,7 +43,6 @@ const SearchForm = ({ onSearch, onFilterByArea, onRandomRecipe, categories, area
         placeholder="Search for a meal..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        required
         aria-label="Search meal by name"
       />
       <select 
@@ -58,7 +57,7 @@ const SearchForm = ({ onSearch, onFilterByArea, onRandomRecipe, categories, area
       </select>
       <select 
         value={area} 
-        onChange={handleAreaFilter}
+        onChange={handleAreaChange}
         aria-label="Filter by area"
       >
         <option value="">All Areas</option>
