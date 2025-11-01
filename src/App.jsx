@@ -37,17 +37,18 @@ function App() {
   };
 
   const handleFilterByArea = async (area) => {
+    if (!area) {
+      // Jika area dipilih kembali ke "All Areas", kosongkan hasil
+      setMeals([]);
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {
-      if (area) {
-        const result = await filterByArea(area);
-        setMeals(result || []);
-      } else {
-        setMeals([]);
-      }
+      const results = await filterByArea(area);
+      setMeals(results || []);
     } catch (err) {
-      setError('Failed to fetch meals. Please try again later.');
+      setError('Failed to filter by area.');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -58,10 +59,13 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const result = await getRandomRecipe();
-      setMeals(result ? [result] : []);
+      const randomMeal = await getRandomRecipe();
+      // Untuk sementara, kita tampilkan di console. Nanti akan dinavigasi.
+      console.log('Random Recipe:', randomMeal);
+      // TODO: Navigate to detail page
+      alert(`Random Recipe: ${randomMeal.strMeal}. Check console for details.`);
     } catch (err) {
-      setError('Failed to fetch meals. Please try again later.');
+      setError('Failed to fetch a random recipe.');
       console.error(err);
     } finally {
       setIsLoading(false);
