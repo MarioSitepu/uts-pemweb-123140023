@@ -166,12 +166,12 @@ Menampilkan informasi lengkap:
 ### 🏠 Halaman Beranda (Desktop)
 Tampilan utama aplikasi dengan form pencarian dan grid layout resep. Menampilkan header dengan logo, form pencarian multi-filter, dan 12 resep cards dalam format grid responsif.
 
-![Halaman Beranda Desktop](features-images/homescreen.png)
+![Halaman Beranda Desktop](features-images/homescreen.jpg)
 
 ### 📱 Halaman Beranda (Mobile)
 Tampilan responsif aplikasi di perangkat mobile. Layout beradaptasi dengan sempurna untuk layar kecil dengan form pencarian yang tetap mudah digunakan.
 
-![Halaman Beranda Mobile](features-images/homescreen-phone.png)
+![Halaman Beranda Mobile](features-images/homescreen-phone.jpg)
 
 ### 🔍 Dropdown Kategori
 Menu dropdown untuk memfilter resep berdasarkan kategori. Menampilkan 14 kategori yang tersedia seperti Beef, Chicken, Dessert, dan lainnya.
@@ -191,7 +191,7 @@ Tampilan card resep dengan efek hover yang interaktif. Saat cursor diarahkan ke 
 ### 📝 Halaman Detail Resep
 Halaman detail lengkap resep dengan gambar besar, informasi meta (Category, Area, Tags), daftar bahan lengkap dengan takaran, dan instruksi step-by-step.
 
-![Halaman Detail Resep](features-images/recipedetail.png)
+![Halaman Detail Resep](features-images/recipedetail.jpg)
 
 ### ⏳ Loading Screen
 Animasi loading yang menarik dengan spinner dan pesan "Loading delicious recipes...". Menunjukkan status loading saat aplikasi mengambil data dari API.
